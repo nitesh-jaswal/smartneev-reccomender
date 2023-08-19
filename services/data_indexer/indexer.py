@@ -1,7 +1,7 @@
+import dataclasses
 import elasticsearch
 import pandas
 import pprint
-import dataclasses
 
 from elasticsearch import helpers
 from typing import Iterable, Any
@@ -12,7 +12,8 @@ from utils.timeit import timeit
 class IndexerConfig:
     es_host: str
     es_port: int
-    source_csv: str
+    index_name:  str
+    source_file: str
 
 def get_elasticsearch(host: str, port: int) -> elasticsearch.Elasticsearch:
     return elasticsearch.Elasticsearch([
@@ -23,23 +24,22 @@ def get_elasticsearch(host: str, port: int) -> elasticsearch.Elasticsearch:
         }
     ])
 
-def generate_records(source_csv: str) -> Iterable[dict[str, Any]]:
-    df = pandas.read_excel(source_csv)
+def generate_records(source_file: str, index_name: str) -> Iterable[dict[str, Any]]:
+    df = pandas.read_excel(source_file)
     for record in df.to_dict(orient='records'):
         yield {
             "_op_type": "index",
-            "_index": "raw_index_001",
+            "_index": index_name,
             "_source": record
         }
 
-# @timeit(fmt_msg="Data indexed suceesfully in {}s")
+@timeit(fmt_msg="Data indexed suceesfully in {}s")
 def main(config: IndexerConfig) -> list[tuple[bool, dict[str, Any]]]:
-    es = get_elasticsearch(config.es_host, config.es_port)
     return [
         result
         for result in helpers.streaming_bulk(
-            client=es, 
-            actions=generate_records(config.source_csv), 
+            client=get_elasticsearch(config.es_host, config.es_port), 
+            actions=generate_records(config.source_file, config.index_name), 
             max_chunk_bytes=1000
         )
     ]
@@ -49,7 +49,8 @@ if __name__ == "__main__":
     config = IndexerConfig(
         es_host="localhost", 
         es_port=9200, 
-        source_csv="/path/to/property_details.xlsx"
+        index_name="raw_index_001",
+        source_file="~/Documents/dummy.xlsx",
     )
     result = main(config)
     print(f"Summary: {pprint.pformat(result, indent=2)}")
