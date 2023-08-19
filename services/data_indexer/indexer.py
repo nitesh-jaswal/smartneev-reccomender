@@ -49,7 +49,7 @@ if __name__ == "__main__":
     config = IndexerConfig(
         es_host="localhost", 
         es_port=9200, 
-        source_csv="/Users/nishantjain/Development/SmartNeev/smart-neev-data/data/property_details.xlsx"
+        source_csv="/path/to/property_details.xlsx"
     )
     result = main(config)
     print(f"Summary: {pprint.pformat(result, indent=2)}")
