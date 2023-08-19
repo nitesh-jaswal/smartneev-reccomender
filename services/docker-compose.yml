@@ -2,14 +2,17 @@ version: "3.9"
 
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.10
     container_name: elasticsearch
     ports:
       - 9200:9200
+      - 9300:9300
     volumes:
       - ./data_indexer/data:/usr/share/elasticsearch/data
     environment:
       - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms2g -Xmx2g" # Change Xms to 1g to match Xmx
+      - xpack.ml.enabled=false
+      - ingest.geoip.downloader.enabled=false
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g" # Change Xms to 1g to match Xmx
       - "discovery.type=single-node" # Add this line
       - "network.host=0.0.0.0"    # Add this line
