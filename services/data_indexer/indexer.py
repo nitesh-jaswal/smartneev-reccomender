@@ -33,7 +33,7 @@ def generate_records(source_file: str, index_name: str) -> Iterable[dict[str, An
             "_source": record
         }
 
-@timeit(fmt_msg="Data indexed suceesfully in {}s")
+@timeit(fmt_msg="Data indexed successfully in {}s")
 def main(config: IndexerConfig) -> list[tuple[bool, dict[str, Any]]]:
     return [
         result

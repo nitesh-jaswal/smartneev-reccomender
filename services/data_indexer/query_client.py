@@ -38,7 +38,7 @@ class ESQueryClient:
         })
         return response
 
-@timeit(fmt_msg="Data indexed suceesfully in {}s")
+@timeit(fmt_msg="Search complete in {}s")
 def main(config: QueryClientConfig, search_term: str) -> list[tuple[bool, dict[str, Any]]]:
     search_client = ESQueryClient(
         client=get_elasticsearch(config.es_host, config.es_port),
