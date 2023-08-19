@@ -1,5 +1,9 @@
+# Python
+.pyc
+__pycache__/
+
 # IDE
 .vscode
 
-# data_indexer
+# Services
 services/data_indexer/data
