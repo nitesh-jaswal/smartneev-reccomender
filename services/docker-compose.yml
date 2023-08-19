@@ -8,3 +8,8 @@ services:
       - 9200:9200
     volumes:
       - ./data_indexer/data:/usr/share/elasticsearch/data
+    environment:
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g" # Change Xms to 1g to match Xmx
+      - "discovery.type=single-node" # Add this line
+      - "network.host=0.0.0.0"    # Add this line
